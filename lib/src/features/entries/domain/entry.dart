@@ -1,27 +1,23 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
+
+part 'entry.freezed.dart';
+part 'entry.g.dart';
 
 typedef EntryID = String;
 
-class Entry extends Equatable {
-  const Entry({
-    required this.id,
-    required this.jobId,
-    required this.start,
-    required this.end,
-    required this.comment,
-  });
-  final EntryID id;
-  final JobID jobId;
-  final DateTime start;
-  final DateTime end;
-  final String comment;
+@freezed
+class Entry with _$Entry {
+  const Entry._();
+  const factory Entry({
+    required EntryID id,
+    required JobID jobId,
+    required DateTime start,
+    required DateTime end,
+    required String comment,
+  }) = _Entry;
 
-  @override
-  List<Object> get props => [id, jobId, start, end, comment];
-
-  @override
-  bool get stringify => true;
+  factory Entry.fromJson(Map<String, Object?> json) => _$EntryFromJson(json);
 
   double get durationInHours =>
       end.difference(start).inMinutes.toDouble() / 60.0;
@@ -36,14 +32,5 @@ class Entry extends Equatable {
       end: DateTime.fromMillisecondsSinceEpoch(endMilliseconds),
       comment: value['comment'] as String? ?? '',
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'jobId': jobId,
-      'start': start.millisecondsSinceEpoch,
-      'end': end.millisecondsSinceEpoch,
-      'comment': comment,
-    };
   }
 }
